@@ -1,26 +1,28 @@
-package main
+package tests
 
 import (
 	"reflect"
 	"testing"
+
+	"github.com/qjvtenkroode/endless/pkg/endless"
 )
 
 func TestEndlessIntegration(t *testing.T) {
-	store, err := NewBoltEndlessStore()
+	store, err := endless.NewBoltEndlessStore()
 	assertNoError(t, err)
-	endless := CreateEndless(store)
+	e := endless.CreateEndless(store)
 
-	item, err := CreateItem("http://www.test.com")
+	item, err := endless.CreateItem("http://www.test.com")
 	if err != nil {
 		t.Errorf("Endless integration - failed to create item, got %v.", err)
 	}
 
-	err = endless.Add(item)
+	err = e.Add(item)
 	if err != nil {
 		t.Errorf("Endless integration - failed to add item, got %v.", err)
 	}
 
-	got, err := endless.Get(item.ID)
+	got, err := e.Get(item.ID)
 	if err != nil {
 		t.Errorf("Endless integration - failed to get item, got %v.", err)
 	}
@@ -28,7 +30,7 @@ func TestEndlessIntegration(t *testing.T) {
 		t.Errorf("Endless integration - got %v, want %v.", got, item)
 	}
 
-	items, err := endless.List()
+	items, err := e.List()
 	want := 1
 	if err != nil {
 		t.Errorf("Endless integration - failed to list items, got %v.", err)

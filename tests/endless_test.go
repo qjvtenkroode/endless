@@ -1,16 +1,18 @@
-package main
+package tests
 
 import (
 	"errors"
 	"reflect"
 	"testing"
+
+	"github.com/qjvtenkroode/endless/pkg/endless"
 )
 
 type StubEndlessStore struct {
-	EndlessList map[string]*Item
+	EndlessList map[string]*endless.Item
 }
 
-func (s *StubEndlessStore) Add(i *Item) error {
+func (s *StubEndlessStore) Add(i *endless.Item) error {
 	_, ok := s.EndlessList[i.ID]
 	if ok {
 		return errors.New("ID already exists")
@@ -19,7 +21,7 @@ func (s *StubEndlessStore) Add(i *Item) error {
 	return nil
 }
 
-func (s *StubEndlessStore) Get(str string) (*Item, error) {
+func (s *StubEndlessStore) Get(str string) (*endless.Item, error) {
 	_, ok := s.EndlessList[str]
 	if !ok {
 		return nil, errors.New("ID does not exist")
@@ -27,8 +29,8 @@ func (s *StubEndlessStore) Get(str string) (*Item, error) {
 	return s.EndlessList[str], nil
 }
 
-func (s *StubEndlessStore) List() ([]*Item, error) {
-	items := []*Item{}
+func (s *StubEndlessStore) List() ([]*endless.Item, error) {
+	items := []*endless.Item{}
 	for _, i := range s.EndlessList {
 		items = append(items, i)
 	}
@@ -38,8 +40,8 @@ func (s *StubEndlessStore) List() ([]*Item, error) {
 func TestEndless(t *testing.T) {
 
 	t.Run("Endless object initialisation", func(t *testing.T) {
-		got := CreateEndless(nil)
-		want := &Endless{nil}
+		got := endless.CreateEndless(nil)
+		want := &endless.Endless{}
 
 		if !reflect.DeepEqual(got, want) {
 			t.Errorf("got %v, want %v.", got, want)
@@ -47,17 +49,17 @@ func TestEndless(t *testing.T) {
 	})
 
 	t.Run("Endless CreateItem - one item", func(t *testing.T) {
-		got, _ := CreateItem("http://www.test.com")
-		want := &Item{"7330d2d5f820390054efbfb267b8639e", "http://www.test.com", false}
+		got, _ := endless.CreateItem("http://www.test.com")
+		want := &endless.Item{"7330d2d5f820390054efbfb267b8639e", "http://www.test.com", false}
 
 		assertItem(t, got, want)
 	})
 
 	t.Run("Endless CreateItem - two items", func(t *testing.T) {
-		got1, _ := CreateItem("http://www.test.com")
-		want1 := &Item{"7330d2d5f820390054efbfb267b8639e", "http://www.test.com", false}
-		got2, _ := CreateItem("http://www.anothertest.com")
-		want2 := &Item{"13276e25781a53ce373cba68f0637a42", "http://www.anothertest.com", false}
+		got1, _ := endless.CreateItem("http://www.test.com")
+		want1 := &endless.Item{"7330d2d5f820390054efbfb267b8639e", "http://www.test.com", false}
+		got2, _ := endless.CreateItem("http://www.anothertest.com")
+		want2 := &endless.Item{"13276e25781a53ce373cba68f0637a42", "http://www.anothertest.com", false}
 
 		assertItem(t, got1, want1)
 		assertItem(t, got2, want2)
@@ -66,8 +68,8 @@ func TestEndless(t *testing.T) {
 }
 
 func TestEndlessStore(t *testing.T) {
-	e := CreateEndless(&StubEndlessStore{map[string]*Item{}})
-	item, _ := CreateItem("http://www.test.com")
+	e := endless.CreateEndless(&StubEndlessStore{map[string]*endless.Item{}})
+	item, _ := endless.CreateItem("http://www.test.com")
 
 	t.Run("EndlessStore - add one item", func(t *testing.T) {
 		err := e.Add(item)
@@ -86,7 +88,7 @@ func TestEndlessStore(t *testing.T) {
 
 	t.Run("EndlessStore - get one item", func(t *testing.T) {
 		got, err := e.Get("7330d2d5f820390054efbfb267b8639e")
-		want, _ := CreateItem("http://www.test.com")
+		want, _ := endless.CreateItem("http://www.test.com")
 
 		assertNoError(t, err)
 		assertItem(t, got, want)
@@ -103,7 +105,7 @@ func TestEndlessStore(t *testing.T) {
 	})
 }
 
-func assertItem(t *testing.T, got *Item, want *Item) {
+func assertItem(t *testing.T, got *endless.Item, want *endless.Item) {
 	t.Helper()
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("got %v, want %v.", got, want)
