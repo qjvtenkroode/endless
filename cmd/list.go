@@ -28,7 +28,7 @@ var listCmd = &cobra.Command{
 			log.Fatalf("Main - list failed: %v", err)
 		}
 		for _, i := range items {
-			fmt.Printf("ID: %v\nURL: %v\nRead: %v\n", i.ID, i.Url, i.Read)
+			fmt.Printf("ID: %v\nURL: %v\nRead: %v\n\n", i.ID, i.Url, i.Read)
 		}
 	},
 }
