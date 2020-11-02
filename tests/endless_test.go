@@ -37,6 +37,10 @@ func (s *StubEndlessStore) List() ([]*endless.Item, error) {
 	return items, nil
 }
 
+func (s *StubEndlessStore) Random() (*endless.Item, error) {
+	return nil, nil
+}
+
 func TestEndless(t *testing.T) {
 
 	t.Run("Endless object initialisation", func(t *testing.T) {
