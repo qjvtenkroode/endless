@@ -10,7 +10,7 @@ import (
 var rootCmd = &cobra.Command{
 	Use:   "endless",
 	Short: "Endless stores the endless list of browser tabs you keep open for later reading",
-	Long:  "Endless, see Short version...",
+	Long:  "Endless stores the endless list of browser tabs you keep open for later reading",
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("testing cobra")
 	},
